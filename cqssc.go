@@ -76,7 +76,7 @@ func cqssc_cqcp_net() {
 		return
 	}
 	dt := data{Type: 1, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
-	dt.dataIn()
+	dt.dataIn("cqssc_cqcp_net")
 }
 
 type sJson163 struct {
@@ -124,6 +124,6 @@ func cqssc_163_com(period string) {
 	if len(j.AwardNumberInfoList) > 0 && j.AwardNumberInfoList[0].Period == period {
 		issue, _ := strconv.Atoi(j.AwardNumberInfoList[0].Period)
 		dt := data{Type: 1, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
-		dt.dataIn()
+		dt.dataIn("cqssc_163_com")
 	}
 }

@@ -10,7 +10,7 @@ import (
 	//"github.com/go-pg/pg"
 )
 
-func (self *data) dataIn() {
+func (self *data) dataIn(src string) {
 	strType := strconv.Itoa(self.Type)
 	for !(redisClient.HSetNX(strType, "client_lock", true).Val()) {
 		fmt.Println("dataIn() client_lock ,false,Type=", self.Type)
@@ -38,7 +38,7 @@ func (self *data) dataIn() {
 		return
 	}
 	if b == true {
-		//fmt.Println("true")
+		fmt.Println("来源：", src)
 		self.done()
 		//redisClient.Set("caiji_"self.Type+"_"+self.Issue)
 	}
