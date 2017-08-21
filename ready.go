@@ -28,7 +28,7 @@ func getCron(gameId int) {
 		return
 	}
 	diffTime := time.Now().Local().Unix() - ttActionTime.Unix()
-	if diffTime > 180 || diffTime < -15 { //三分钟采集不到就不需要采了
+	if diffTime > 120 || diffTime < -15 { //2分钟采集不到就别浪费时间了
 		//fmt.Println("getCron() 34:"+"不在采集时间内跳过！", dt.Type, "	", diffTime)
 		return
 	}
@@ -57,17 +57,17 @@ func getCron(gameId int) {
 		return
 	}
 	//fmt.Println("getCron()64:", openInfo.Last_period, "	", diffTime)
-	openInfo.checkIsGot()
+	openInfo.checkIsGot(strconv.Itoa(openInfo.Last_period))
 }
 
-func (self *OpenInfo) checkIsGot() {
+func (self *OpenInfo) checkIsGot(period string) {
 	if redisClient.Exists("Client_"+strconv.Itoa(self.Type)+"_"+strconv.Itoa(self.Last_period)).Val() == 0 { //不存在
 		switch self.Type {
 		case 1:
-			fmt.Println("checkIsGot():1		", time.Now())
-			go cqssc_163_com()
-			cqssc_cqcp_net()
-			time.Sleep(time.Second * 3)
+			fmt.Println("checkIsGot():1		", time.Now(), "		period=", period)
+			go cqssc_163_com(period)
+			go cqssc_cqcp_net()
+			time.Sleep(time.Second * 4)
 		default:
 			fmt.Println("checkIsGot():default")
 		}
