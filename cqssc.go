@@ -12,39 +12,61 @@ import (
 	"github.com/henrylee2cn/surfer"
 )
 
-//redisClient.SetNX(s,ife,)
+var fangLouChan = make(chan string, 10000)
 
-//func cqssc_163_com() { //163的比较慢 质量较差
-//	resp, err := surfer.Download(&surfer.Request{
-//		Url: "http://trend.caipiao.163.com/cqssc/jiben-5xing.html?periodNumber=30",
-//		//DownloaderID: 1,
-//	})
-//	if err != nil {
-//		fmt.Println("67:", err)
-//		return
-//	}
-//	defer resp.Body.Close()
-//	defer surfer.DestroyJsFiles()
-//	var b []byte
-//	b, err = ioutil.ReadAll(resp.Body)
-//	//log.Println(string(b), err)
-//	re := regexp.MustCompile(`(<tr data-period=")([0-9]{9})(" data-award=\")([0-9 ]{9})(">)`).FindAllStringSubmatch(string(b), 200)
+func getCqsscAll() { //重庆时时彩2009-12-13至今的数据用作趋势分析
+	go func() {
+		select {
+		case d := <-fangLouChan:
+			cqsscAll(d)
+		}
+	}()
+	var dStr string
+	tt, _ := time.ParseInLocation("2006-01-02", "2009-12-12", time.Local)
+	for {
+		dStr = tt.Add(time.Hour * 24).Format("2006-01-02")
+		tt, _ = time.ParseInLocation("2006-01-02", dStr, time.Local)
+		go cqsscAll(dStr)
+		if dStr == "2017-08-21" {
+			break
+		}
+		time.Sleep(time.Microsecond * 300) //任务完成速度跟不上会吃光内存
+	}
+}
 
-//	if len(re) != 30 || len(re[29]) <= 4 {
-//		fmt.Println("33 regexp规则错误，或数据错误！")
-//		fmt.Println(string(b))
-//		return
-//	}
+func cqsscAll(d string) {
+	u := fmt.Sprintf("http://chart.cp.360.cn/kaijiang/kaijiang?lotId=255401&spanType=2&span=%s_%s", d, d)
+	resp, err := surfer.Download(&surfer.Request{
+		Url: u,
+		//DownloaderID: 1,
+	})
 
-//	var issue int
-//	issue, err = strconv.Atoi(re[29][2])
-//	if err != nil {
-//		return
-//	}
-//	dt := data{Type: 1, Time: time.Now(), Data: re[29][4], Issue: issue}
-//	dt.dataIn()
+	if err != nil {
+		//fmt.Println("94:", err, "	", u)
+		time.Sleep(time.Second)
+		fangLouChan <- d
+		return
+	}
 
-//}
+	defer resp.Body.Close()
+	defer surfer.DestroyJsFiles()
+	var b []byte
+	b, err = ioutil.ReadAll(resp.Body)
+
+	re := regexp.MustCompile(`(<tr><td class='gray'>)([0-9]{3})(</td><td class='red big'>)([0-9]{5})(</td><td class='gray'>)`)
+	a := re.FindAllStringSubmatch(string(b), -1)
+	//fmt.Println(len(a), "	", len(a[0]))
+
+	for i := 0; i < len(a) && len(a[i]) != 5; i++ {
+		tt, _ := time.ParseInLocation("2006-01-02", d, time.Local)
+		dd := a[i][4][0:1] + " " + a[i][4][1:2] + " " + a[i][4][2:3] + " " + a[i][4][3:4] + " " + a[i][4][4:5]
+		strIssue := tt.Format("060102") + a[i][2]
+		issue, _ := strconv.Atoi(strIssue)
+		dt := data{Type: 1, Time: time.Now(), Data: dd, Issue: issue}
+		dt.dataIn("", strIssue)
+	}
+
+}
 
 func cqssc_cqcp_net() {
 	resp, err := surfer.Download(&surfer.Request{
@@ -63,8 +85,6 @@ func cqssc_cqcp_net() {
 
 	//log.Println(string(b), err)
 	re := regexp.MustCompile(`([\d]{9})(</li><li class=.?openli2.?>)([,0-9]{9})(</li>)`).FindAllStringSubmatch(string(b), -1)
-	//fmt.Println("105:", re[0][3])
-	//fmt.Println("106:", re[0])
 	if len(re) < 1 || len(re[0]) != 5 {
 		fmt.Println("67 regexp规则错误，或数据错误！")
 		return
@@ -76,7 +96,7 @@ func cqssc_cqcp_net() {
 		return
 	}
 	dt := data{Type: 1, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
-	dt.dataIn("cqssc_cqcp_net")
+	dt.dataIn("cqssc_cqcp_net", re[0][1])
 }
 
 type sJson163 struct {
@@ -124,6 +144,6 @@ func cqssc_163_com(period string) {
 	if len(j.AwardNumberInfoList) > 0 && j.AwardNumberInfoList[0].Period == period {
 		issue, _ := strconv.Atoi(j.AwardNumberInfoList[0].Period)
 		dt := data{Type: 1, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
-		dt.dataIn("cqssc_163_com")
+		dt.dataIn("cqssc_163_com", j.AwardNumberInfoList[0].Period)
 	}
 }
