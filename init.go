@@ -12,8 +12,8 @@ func redisInit() {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:        "localhost:6379",
 		Password:    "", // no password set
-		DB:          0,  // use default DB
-		PoolSize:    9999,
+		DB:          1,  // use default DB
+		PoolSize:    999,
 		DialTimeout: time.Second * 3,
 	})
 	pong, err := redisClient.Ping().Result()
@@ -43,7 +43,7 @@ func dbInit() {
 		DialTimeout:        3 * time.Second,
 		ReadTimeout:        3 * time.Second,
 		WriteTimeout:       3 * time.Second,
-		PoolSize:           15, //postgresql默认是100的,多了无意义对于插入来说，同时看开了多少个采集端毕竟pg默认连接数才100
+		PoolSize:           20, //postgresql默认是100的,多了无意义对于插入来说，同时看开了多少个采集端毕竟pg默认连接数才100
 		PoolTimeout:        time.Second * 1000000,
 		IdleTimeout:        time.Second * 10,
 		IdleCheckFrequency: time.Second,
@@ -62,5 +62,5 @@ func init() {
 	redisInit()
 	dbInit()
 	go loopDoneNotice()
-	go getCqsscAll()
+	//	go getCqsscAll()
 }

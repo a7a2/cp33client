@@ -13,10 +13,11 @@ import (
 var notice = make(chan string, 10000)
 
 func loopDoneNotice() {
+	var err error
 	for {
 		select {
 		case temp := <-notice:
-			_, err := surfer.Download(&surfer.Request{
+			_, err = surfer.Download(&surfer.Request{
 				Url:          temp,
 				DownloaderID: 1,
 			})
@@ -42,7 +43,6 @@ func (self *data) done() {
 		notice <- u
 		return
 	}
-
 	//defer resp.Body.Close()
 	//defer surfer.DestroyJsFiles()
 	redisClient.Set("Client_"+strconv.Itoa(self.Type)+"_"+strconv.Itoa(self.Issue), self.Data, time.Minute*30)
