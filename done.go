@@ -13,11 +13,10 @@ import (
 var notice = make(chan string, 10000)
 
 func loopDoneNotice() {
-	var err error
 	for {
 		select {
 		case temp := <-notice:
-			_, err = surfer.Download(&surfer.Request{
+			resp, err := surfer.Download(&surfer.Request{
 				Url:          temp,
 				DownloaderID: 1,
 			})
@@ -25,15 +24,14 @@ func loopDoneNotice() {
 				time.Sleep(time.Second)
 				notice <- temp
 			}
-			//resp.Body.Close()
+			resp.Body.Close()
 		}
 	}
 }
 
 func (self *data) done() {
-	var err error
 	u := "http://127.0.0.1:8080/dataInNotice/" + strconv.Itoa(self.Type) + "/" + strconv.Itoa(self.Issue)
-	_, err = surfer.Download(&surfer.Request{
+	resp, err := surfer.Download(&surfer.Request{
 		Url: u,
 		//DownloaderID: 1,
 	})
@@ -43,8 +41,8 @@ func (self *data) done() {
 		notice <- u
 		return
 	}
-	//defer resp.Body.Close()
-	//defer surfer.DestroyJsFiles()
+	defer resp.Body.Close()
+	defer surfer.DestroyJsFiles()
 	redisClient.Set("Client_"+strconv.Itoa(self.Type)+"_"+strconv.Itoa(self.Issue), self.Data, time.Minute*30)
 	fmt.Println(time.Now(), " 成功入库：", "	", self.Type, self.Issue, "		", self.Data)
 }

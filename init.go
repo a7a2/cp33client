@@ -44,7 +44,7 @@ func dbInit() {
 		ReadTimeout:        3 * time.Second,
 		WriteTimeout:       3 * time.Second,
 		PoolSize:           20, //postgresql默认是100的,多了无意义对于插入来说，同时看开了多少个采集端毕竟pg默认连接数才100
-		PoolTimeout:        time.Second * 1000000,
+		PoolTimeout:        time.Second * 3,
 		IdleTimeout:        time.Second * 10,
 		IdleCheckFrequency: time.Second,
 	})
