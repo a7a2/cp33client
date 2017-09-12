@@ -36,8 +36,19 @@ func getCqsscAll() { //重庆时时彩2009-12-13至今的数据用作趋势分�
 
 func cqsscAll(d string) {
 	u := fmt.Sprintf("http://chart.cp.360.cn/kaijiang/kaijiang?lotId=255401&spanType=2&span=%s_%s", d, d)
+	h := map[string][]string{
+		"Accept-Language":  []string{"zh-CN,zh;q=0.8,en;q=0.6,th;q=0.4"},
+		"Accept":           []string{"application/json, text/javascript, */*; q=0.01"},
+		"Connection":       []string{"close"},
+		"Content-Type":     []string{"application/x-www-form-urlencoded; charset=UTF-8"},
+		"Host":             []string{"127.0.0.1:8080"},
+		"Origin":           []string{"http://127.0.0.1:8080"},
+		"User-Agent":       []string{"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Mobile Safari/537.36"},
+		"X-Requested-With": []string{"XMLHttpRequest"},
+	}
 	resp, err := surfer.Download(&surfer.Request{
-		Url: u,
+		Header: h,
+		Url:    u,
 		//DownloaderID: 1,
 	})
 
