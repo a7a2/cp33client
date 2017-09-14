@@ -38,20 +38,15 @@ import (
 	"time"
 )
 
-//	"github.com/henrylee2cn/surfer"
-
 func main() {
 	//fmt.Println(time.Now().Format("15:04:05"))
 	for {
 		select {
 		case <-time.After(time.Second * 10):
-			getCron(1)
+			//go getCron(1)
+			go getCron("7")
 			//fmt.Println(openInfo.Last_period)
 		}
 	}
-
-	//	for {
-	//		select {}
-	//	}
 
 }

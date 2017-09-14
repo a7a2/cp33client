@@ -63,17 +63,15 @@ func cqsscAll(d string) {
 	defer surfer.DestroyJsFiles()
 	var b []byte
 	b, err = ioutil.ReadAll(resp.Body)
-
 	re := regexp.MustCompile(`(<tr><td class='gray'>)([0-9]{3})(</td><td class='red big'>)([0-9]{5})(</td><td class='gray'>)`)
 	a := re.FindAllStringSubmatch(string(b), -1)
-	//fmt.Println(len(a), "	", len(a[0]))
 
 	for i := 0; i < len(a) && len(a[i]) != 5; i++ {
 		tt, _ := time.ParseInLocation("2006-01-02", d, time.Local)
 		dd := a[i][4][0:1] + " " + a[i][4][1:2] + " " + a[i][4][2:3] + " " + a[i][4][3:4] + " " + a[i][4][4:5]
 		strIssue := tt.Format("060102") + a[i][2]
 		issue, _ := strconv.Atoi(strIssue)
-		dt := data{Type: 1, Time: time.Now(), Data: dd, Issue: issue}
+		dt := &data{Type: 1, Time: time.Now(), Data: dd, Issue: issue}
 		dt.dataIn("", strIssue)
 	}
 
@@ -106,7 +104,7 @@ func cqssc_cqcp_net() {
 	if err != nil {
 		return
 	}
-	dt := data{Type: 1, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
+	dt := &data{Type: 1, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
 	dt.dataIn("cqssc_cqcp_net", re[0][1])
 }
 
@@ -154,7 +152,7 @@ func cqssc_163_com(period string) {
 	}
 	if len(j.AwardNumberInfoList) > 0 && j.AwardNumberInfoList[0].Period == period {
 		issue, _ := strconv.Atoi(j.AwardNumberInfoList[0].Period)
-		dt := data{Type: 1, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
+		dt := &data{Type: 1, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
 		dt.dataIn("cqssc_163_com", j.AwardNumberInfoList[0].Period)
 	}
 }

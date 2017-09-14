@@ -36,7 +36,7 @@ type data struct {
 	Issue int
 }
 
-type dataTime struct {
+type DataTime struct {
 	Id         int
 	Type       int
 	ActionNo   int

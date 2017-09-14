@@ -11,11 +11,11 @@ import (
 	"github.com/henrylee2cn/surfer"
 )
 
-func getCron(gameId int) {
+func getCron(gameId string) {
 	var err error
 	var resp *http.Response
 	resp, err = surfer.Download(&surfer.Request{
-		Url: "http://127.0.0.1:8080/apiMyself/" + "1",
+		Url: "http://127.0.0.1:8080/apiMyself/" + gameId,
 		//DownloaderID: 1,
 	})
 	if err != nil {
@@ -50,6 +50,8 @@ func (self *OpenInfo) checkIsGot(period string) {
 			fmt.Println("checkIsGot():1		", time.Now(), "		period=", period)
 			go cqssc_163_com(period)
 			go cqssc_cqcp_net()
+		case 7:
+			go xzssc_xjflcp_com(&period)
 		default:
 			fmt.Println("checkIsGot():default")
 		}

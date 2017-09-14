@@ -30,6 +30,7 @@ func (self *httpReq) Gethtml() (*http.Response, error) {
 	request.Header.Set("Accept-Encoding", "*")
 	request.Header.Set("Host", "*")
 	request.Header.Set("Accept", "*/*")
+	request.Header.Set("Connection", "close")
 	if self.referer != "" {
 		request.Header.Set("Referer", self.referer)
 	}

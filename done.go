@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	//"regexp"
 	"strconv"
 
 	"github.com/henrylee2cn/surfer"

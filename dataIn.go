@@ -3,11 +3,7 @@ package main
 import (
 	"fmt"
 	"strconv"
-	//"strconv"
 	"time"
-
-	//"github.com/henrylee2cn/surfer"
-	//"github.com/go-pg/pg"
 )
 
 func (self *data) dataIn(src, issue string) {
@@ -36,10 +32,10 @@ func (self *data) dataIn(src, issue string) {
 
 	//var stmt *pg.Stmt
 	var b bool
-	b, err = tx.Model(&self).Where("type=? and issue=?", self.Type, self.Issue).SelectOrInsert()
+	b, err = tx.Model(self).Where("type=? and issue=?", self.Type, self.Issue).SelectOrInsert()
 	if err != nil {
-		tx.Rollback()
 		fmt.Println("dataIn()96:" + err.Error())
+		tx.Rollback()
 		return
 	}
 
