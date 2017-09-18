@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
-	"time"
+	//	"time"
 
 	"github.com/henrylee2cn/surfer"
 )
@@ -47,11 +47,13 @@ func (self *OpenInfo) checkIsGot(period string) {
 	if redisClient.Exists("Client_"+strconv.Itoa(self.Type)+"_"+strconv.Itoa(self.Last_period)).Val() == 0 { //不存在
 		switch self.Type {
 		case 1:
-			fmt.Println("checkIsGot():1		", time.Now(), "		period=", period)
+			//fmt.Println("checkIsGot():1		", time.Now(), "		period=", period)
 			go cqssc_163_com(period)
 			go cqssc_cqcp_net()
 		case 7:
 			go xzssc_xjflcp_com(&period)
+		case 9:
+			go pk10_bwlc_net(&period)
 		default:
 			fmt.Println("checkIsGot():default")
 		}
