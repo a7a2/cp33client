@@ -26,6 +26,9 @@ func pk10_bwlc_net(period *string) {
 	defer surfer.DestroyJsFiles()
 	var b []byte
 	b, err = ioutil.ReadAll(resp.Body)
+	if len(b) < 2200 {
+		return
+	}
 	re := regexp.MustCompile(`(<span class="ml10 b red fa f14">)([0-9]{6})(</span>)([.\S\s]+?)(<ul class="dib">)([.\S\s]*?)(</ul>)`).FindAllStringSubmatch(string(b[21000:]), -1)
 
 	if len(re) != 1 && len(re[0]) != 7 {
