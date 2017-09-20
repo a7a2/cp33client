@@ -29,7 +29,7 @@ func tjssc_icaile_com(gameType int, period *string) {
 	re := regexp.MustCompile(`(20)([0-9]{9})(</td>)([\S\s]+?)(<td>)([,0-9]{9})(</td>)`).FindAllStringSubmatch(string(b), -1)
 
 	c := len(re) - 1
-	if len(re) < c || len(re[c]) != 8 {
+	if len(re) == 0 || len(re) < c || len(re[c]) != 8 {
 		return
 	}
 
