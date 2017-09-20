@@ -77,7 +77,7 @@ func cqsscAll(d string) {
 
 }
 
-func cqssc_cqcp_net() {
+func cqssc_cqcp_net(gameType int, period *string) {
 	resp, err := surfer.Download(&surfer.Request{
 		Url: "http://buy.cqcp.net/Game/GetNum.aspx?iType=3&time=Mon%20Aug%2007%202017%2001:49:30%20GMT+0800%20(HKT)",
 		//DownloaderID: 1,
@@ -104,7 +104,10 @@ func cqssc_cqcp_net() {
 	if err != nil {
 		return
 	}
-	dt := &data{Type: 1, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
+	if *period != re[0][1] {
+		return
+	}
+	dt := &data{Type: gameType, Time: time.Now(), Data: strings.Replace(re[0][3], ",", " ", -1), Issue: issue}
 	dt.dataIn("cqssc_cqcp_net", re[0][1])
 }
 
@@ -127,8 +130,8 @@ type a163 struct {
 	XingTai       string
 }
 
-func cqssc_163_com(period string) {
-	u := fmt.Sprintf("http://caipiao.163.com/award/getAwardNumberInfo.html?gameEn=ssc&cache=%v&period=%s", time.Now().UnixNano(), period)
+func cqssc_163_com(gameType int, period *string) {
+	u := fmt.Sprintf("http://caipiao.163.com/award/getAwardNumberInfo.html?gameEn=ssc&cache=%v&period=%s", time.Now().UnixNano(), *period)
 	resp, err := surfer.Download(&surfer.Request{
 		Url: u,
 		//DownloaderID: 1,
@@ -150,9 +153,9 @@ func cqssc_163_com(period string) {
 		fmt.Println(err.Error())
 		return
 	}
-	if len(j.AwardNumberInfoList) > 0 && j.AwardNumberInfoList[0].Period == period {
+	if len(j.AwardNumberInfoList) > 0 && j.AwardNumberInfoList[0].Period == *period {
 		issue, _ := strconv.Atoi(j.AwardNumberInfoList[0].Period)
-		dt := &data{Type: 1, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
+		dt := &data{Type: gameType, Time: time.Now(), Data: j.AwardNumberInfoList[0].WinningNumber, Issue: issue}
 		dt.dataIn("cqssc_163_com", j.AwardNumberInfoList[0].Period)
 	}
 }

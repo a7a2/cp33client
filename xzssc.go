@@ -23,7 +23,7 @@ func Slice(s string) (b []byte) {
 	return
 }
 
-func xzssc_xjflcp_com(period *string) {
+func xzssc_xjflcp_com(gameType int, period *string) {
 	var strPeriod string
 	slicePeriod := string(Slice(*period))
 	if len(slicePeriod) == 9 && slicePeriod[6:7] == "0" {
@@ -50,11 +50,14 @@ func xzssc_xjflcp_com(period *string) {
 	if len(re) != 1 || len(re[0]) != 7 {
 		return
 	}
+	if *period != re[0][1] { //期号
+		return
+	}
 	var issue int
 	issue, err = strconv.Atoi(*period)
 	if err != nil {
 		return
 	}
-	dt := data{Type: 7, Time: time.Now(), Data: re[0][5], Issue: issue}
+	dt := data{Type: gameType, Time: time.Now(), Data: re[0][5], Issue: issue}
 	dt.dataIn("xzssc_xjflcp_com", re[0][5])
 }

@@ -8,9 +8,11 @@ import (
 )
 
 var (
-	cqsscId     = 1
-	redisClient *redis.Client
-	ChanArray   = make([]chan int, 100)
+	cqsscId           = 1
+	redisClient       *redis.Client
+	ChanArray         = make([]chan int, 100)
+	getOpenDataApiUrl = "http://127.0.0.1:8080/apiMyself/"    //获取开奖信息地址
+	dataNotice        = "http://127.0.0.1:8080/dataInNotice/" //采集入库后数据通知地址
 )
 
 type Result struct { //全站通用json返回结果

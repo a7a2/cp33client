@@ -16,8 +16,8 @@ func loopDoneNotice() {
 		select {
 		case temp := <-notice:
 			resp, err := surfer.Download(&surfer.Request{
-				Url:          temp,
-				DownloaderID: 1,
+				Url: temp,
+				//DownloaderID: 1,
 			})
 			if err != nil {
 				time.Sleep(time.Second)
@@ -29,7 +29,7 @@ func loopDoneNotice() {
 }
 
 func (self *data) done() {
-	u := "http://127.0.0.1:8080/dataInNotice/" + strconv.Itoa(self.Type) + "/" + strconv.Itoa(self.Issue)
+	u := dataNotice + strconv.Itoa(self.Type) + "/" + strconv.Itoa(self.Issue)
 	resp, err := surfer.Download(&surfer.Request{
 		Url: u,
 		//DownloaderID: 1,

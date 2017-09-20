@@ -11,7 +11,7 @@ import (
 	"github.com/henrylee2cn/surfer"
 )
 
-func pk10_bwlc_net(period *string) {
+func pk10_bwlc_net(gameType int, period *string) {
 	u := fmt.Sprintf("http://www.bwlc.net/")
 	resp, err := surfer.Download(&surfer.Request{
 		Url: u,
@@ -52,6 +52,6 @@ func pk10_bwlc_net(period *string) {
 	if err != nil {
 		return
 	}
-	dt := data{Type: 9, Time: time.Now(), Data: strData, Issue: issue}
+	dt := data{Type: gameType, Time: time.Now(), Data: strData, Issue: issue}
 	dt.dataIn("pk10_bwlc_net", strData)
 }

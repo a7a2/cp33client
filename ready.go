@@ -15,7 +15,7 @@ func getCron(gameId string) {
 	var err error
 	var resp *http.Response
 	resp, err = surfer.Download(&surfer.Request{
-		Url: "http://127.0.0.1:8080/apiMyself/" + gameId,
+		Url: getOpenDataApiUrl + gameId,
 		//DownloaderID: 1,
 	})
 	if err != nil {
@@ -48,12 +48,14 @@ func (self *OpenInfo) checkIsGot(period string) {
 		switch self.Type {
 		case 1:
 			//fmt.Println("checkIsGot():1		", time.Now(), "		period=", period)
-			go cqssc_163_com(period)
-			go cqssc_cqcp_net()
+			go cqssc_163_com(self.Type, &period)
+			go cqssc_cqcp_net(self.Type, &period)
 		case 7:
-			go xzssc_xjflcp_com(&period)
+			go xzssc_xjflcp_com(self.Type, &period)
 		case 9:
-			go pk10_bwlc_net(&period)
+			go pk10_bwlc_net(self.Type, &period)
+		case 4:
+			go tjssc_icaile_com(self.Type, &period)
 		default:
 			fmt.Println("checkIsGot():default")
 		}
